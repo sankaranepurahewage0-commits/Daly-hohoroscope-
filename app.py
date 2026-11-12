@@ -1,7 +1,7 @@
-
-import os
 from flask import Flask, jsonify, request
+import os
 
+from horoscope import get_horoscope
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
@@ -20,6 +20,12 @@ def receive_sms():
     return jsonify({
         "status": "received"
     }), 200
+@app.route("/horoscope/<sign>", methods=["GET"])
+def horoscope(sign):
+    message = get_horoscope(sign)
+    if message is None:
+        return jsonify({"error": "Invalid zodiac sign"}), 400
+    return jsonify({"sign": sign, "message": message}), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
